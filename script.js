@@ -1,21 +1,14 @@
-const container = document.querySelector('.container')
-const unsplashURL = 'https://source.unsplash.com/random/'
-const rows = 10 
+const codes = document.querySelectorAll('.code')
 
-for(let i = 0; i < rows * 3; i++) {
-    const img = document.createElement('img')
-    img.src = `${unsplashURL}${getRandomSize()}`
-    container.appendChild(img)
-}
+codes[0].focus()
 
-// console.log(getRandomSize())
-
-function getRandomSize() {
-    return `${getRandomNr()}x${getRandomNr()}`
-}
-
-// console.log(getRandomNr())
-
-function getRandomNr() {
-    return Math.floor(Math.random() * 10) + 300
-}
+codes.forEach((code, idx) => {
+    code.addEventListener('keydown', (e) => {
+        codes[idx].value = ''
+        if(e.key >= 0 && e.key <= 9) {
+            setTimeout(() => codes[idx + 1].focus(), 10)
+        }else if(e.key === 'Backspace') {
+            setTimeout(() => codes[idx - 1].focus(), 10)
+        }
+    })
+})
