@@ -1,14 +1,41 @@
-const codes = document.querySelectorAll('.code')
+const result = document.getElementById('result')
+const filter = document.getElementById('filter')
+const listItem = []
 
-codes[0].focus()
+filter.addEventListener('input', (e) => filterData(e.target.value))
 
-codes.forEach((code, idx) => {
-    code.addEventListener('keydown', (e) => {
-        codes[idx].value = ''
-        if(e.key >= 0 && e.key <= 9) {
-            setTimeout(() => codes[idx + 1].focus(), 10)
-        }else if(e.key === 'Backspace') {
-            setTimeout(() => codes[idx - 1].focus(), 10)
+getData()
+
+async function getData() {
+    const res = await fetch('https://randomuser.me/api?results=50')
+
+    const {results} = await res.json()
+
+    // clear result
+    result.innerHTML = ''
+
+    results.forEach(user => {
+        const li = document.createElement('li')
+
+        listItem.push(li)
+
+        li.innerHTML = `
+            <img src="${user.picture.large}" alt="${user.name.first}">
+            <div class="user-info">
+                <h4>${user.name.first} ${user.name.last}</h4>
+                <p>${user.location.city}, ${user.location.country}</p>
+            </div>
+        `
+        result.appendChild(li)
+    })
+}
+
+function filterData(searchTerm) {
+    listItem.forEach(item => {
+        if(item.innerText.toLowerCase().includes(searchTerm.toLowerCase())) {
+            item.classList.remove('hide')
+        } else {
+            item.classList.add('hide')
         }
     })
-})
+}
